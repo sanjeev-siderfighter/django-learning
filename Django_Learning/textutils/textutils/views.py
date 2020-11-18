@@ -1,0 +1,83 @@
+# I myself have created this file - Sanjeev Kumar
+
+from django.http import HttpResponse
+from django.shortcuts import render
+
+
+def index(request):
+    # return HttpResponse("Hello, Django")
+    return render(request, 'index.html')
+
+def about(request):
+    # my_file = open("about_me.txt")
+    # string = my_file.read()
+    # my_file.close()
+    # return HttpResponse(string)
+    return HttpResponse("About Sanjeev <a href = '/'>back</a>")
+
+def analyze(request):
+    # Get the text
+    django_user_text = request.GET.get('user_text', 'default_text')
+    # Analyze the text
+    removepunc = request.GET.get('removepunc', 'off')
+    capitalize = request.GET.get('capitalize', 'off')
+    newlineremove = request.GET.get('newlineremove', 'off')
+    extraspaceremove = request.GET.get('extraspaceremove', 'off')
+    charcount = request.GET.get('charcount', 'off')
+
+    if removepunc == 'on':
+        puncutations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+        analyzed = ""
+        for char in django_user_text:
+            if char not in puncutations:
+                analyzed = analyzed + char
+        params = {'purpose': 'Remove Punctuations', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif capitalize == 'on':
+        analyzed = django_user_text.upper()
+        params = {'purpose': 'CONVERT TO UPPER CASE', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif newlineremove == 'on':
+        analyzed = ""
+        for char in django_user_text:
+            if char is not '\n':
+                analyzed += char
+        params = {'purpose': 'New Line Remove', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif extraspaceremove == 'on':
+        analyzed = ""
+        for index, char in enumerate(django_user_text):
+            if not(django_user_text[index] == " " and django_user_text[index + 1] == " "):
+                analyzed += char
+        params = {'purpose': 'Extra Space Remove', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif charcount == 'on':
+        count = len(django_user_text)
+        params = {'purpose': 'Character Count', 'analyzed_text': count}
+        return render(request, 'analyze.html', params)
+
+    else:
+        return HttpResponse("Error")
+
+# def removepunc(request):
+#     # Get the text
+#     django_user_text = request.GET.get('user_text', 'default_text')
+#     print(django_user_text)
+#     # Analyze the text
+#     return HttpResponse("remove punc <a href = '/'>back</a>")
+#
+# def capfirst(request):
+#     return HttpResponse("capitalize first <a href = '/'>back</a>")
+#
+# def newlineremove(request):
+#     return HttpResponse("new line remove <a href = '/'>back</a>")
+#
+# def spaceremove(request):
+#     return HttpResponse("space remove <a href = '/'>back</a>")
+#
+# def charcount(request):
+#     return HttpResponse("character count <a href = '/'>back</a>")
