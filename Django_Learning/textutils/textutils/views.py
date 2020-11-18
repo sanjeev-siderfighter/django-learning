@@ -17,51 +17,65 @@ def about(request):
 
 def analyze(request):
     # Get the text
-    django_user_text = request.GET.get('user_text', 'default_text')
+    django_user_text = request.POST.get('user_text', 'default_text')
     # Analyze the text
-    removepunc = request.GET.get('removepunc', 'off')
-    capitalize = request.GET.get('capitalize', 'off')
-    newlineremove = request.GET.get('newlineremove', 'off')
-    extraspaceremove = request.GET.get('extraspaceremove', 'off')
-    charcount = request.GET.get('charcount', 'off')
+    removepunc = request.POST.get('removepunc', 'off')
+    capitalize = request.POST.get('capitalize', 'off')
+    newlineremove = request.POST.get('newlineremove', 'off')
+    extraspaceremove = request.POST.get('extraspaceremove', 'off')
+    charcount = request.POST.get('charcount', 'off')
 
+    purpose = ""
+    analyzed_text = ""
     if removepunc == 'on':
         puncutations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
         analyzed = ""
         for char in django_user_text:
             if char not in puncutations:
                 analyzed = analyzed + char
-        params = {'purpose': 'Remove Punctuations', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        # params = {'purpose': 'Remove Punctuations', 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
+        purpose += 'Remove Punctuations'
+        analyzed_text += analyzed
 
-    elif capitalize == 'on':
+    if capitalize == 'on':
         analyzed = django_user_text.upper()
-        params = {'purpose': 'CONVERT TO UPPER CASE', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        # params = {'purpose': 'CONVERT TO UPPER CASE', 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
+        purpose += ' | CONVERT TO UPPER CASE '
+        analyzed_text = analyzed
 
-    elif newlineremove == 'on':
+    if newlineremove == 'on':
         analyzed = ""
         for char in django_user_text:
-            if char is not '\n':
+            if char is not '\n' and char is not '\r':
                 analyzed += char
-        params = {'purpose': 'New Line Remove', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        # params = {'purpose': 'New Line Remove', 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
+        purpose += '| New Line Remove '
+        analyzed_text = analyzed
 
-    elif extraspaceremove == 'on':
+    if extraspaceremove == 'on':
         analyzed = ""
         for index, char in enumerate(django_user_text):
             if not(django_user_text[index] == " " and django_user_text[index + 1] == " "):
                 analyzed += char
-        params = {'purpose': 'Extra Space Remove', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        # params = {'purpose': 'Extra Space Remove', 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
+        purpose += '| Extra Space Remove '
+        analyzed_text = analyzed
 
-    elif charcount == 'on':
+    if charcount == 'on':
         count = len(django_user_text)
-        params = {'purpose': 'Character Count', 'analyzed_text': count}
-        return render(request, 'analyze.html', params)
+        # params = {'purpose': 'Character Count', 'analyzed_text': count}
+        # return render(request, 'analyze.html', params)
+        purpose += '| Character Count '
+        analyzed_text += '<br>Character count is ' + str(count)
 
-    else:
+    if purpose == "":
         return HttpResponse("Error")
+    else:
+        return render(request, 'analyze.html', {'purpose': purpose, 'analyzed_text': analyzed_text})
 
 # def removepunc(request):
 #     # Get the text

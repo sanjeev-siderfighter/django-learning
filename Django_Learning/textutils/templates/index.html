@@ -6,7 +6,8 @@
 </head>
 <body>
 <h1>So, what's going on in your life these days?</h1>
-<form action="/analyze" method="get">
+<form action="/analyze" method="post">
+    {% csrf_token %}
     <textarea name="user_text" spellcheck="false" style="margin: 0px; width: 1107px; height: 143px;"></textarea>
     <br>
     <input name="removepunc" type="checkbox">Remove Punctuations<br>
