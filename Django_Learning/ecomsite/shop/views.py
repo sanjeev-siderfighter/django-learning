@@ -5,4 +5,29 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Shop Index")
+    return render(request, 'shop/index.html')
+
+
+def about(request):
+    return HttpResponse("about page")
+
+
+def contact(request):
+    return HttpResponse("contact page")
+
+
+def tracker(request):
+    return HttpResponse("tracker page")
+
+
+def search(request):
+    return HttpResponse("search page")
+
+
+def productView(request):
+    return HttpResponse("product view page")
+
+
+def checkout(request):
+    return HttpResponse("checkout page")
+
